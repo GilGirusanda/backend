@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Registration Page</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+          crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <hr/>
+        <form th:action="@{/register}" th:method="POST" th:object="${newUser}">
+            <input type="text" th:field="*{login}" placeholder="Enter login" class="form-control col-4 mb-4">
+            <input type="text" th:field="*{name}" placeholder="Enter name" class="form-control col-4 mb-4">
+            <button class="btn btn-primary" type="submit">Register</button>
+        </form>
+        <hr/>
+        <a th:href="@{/}">Back to home page</a>
+    </div>
+</body>
+</html>

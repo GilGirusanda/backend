@@ -1,0 +1,6 @@
+curl -X POST http://localhost:8080/user/register -H "Content-Type:application/json" -d "{\"login\":\"apple_commit\", \"name\":\"Apple Inc\", \"role\":\"ROLE_USER\"}"
+
+curl -X POST http://localhost:8080/user/login -H "Content-Type:application/json" -d "{\"login\":\"apple_commit\"}"
+
+curl -X GET http://localhost:8080/user/search/apple_commit
+

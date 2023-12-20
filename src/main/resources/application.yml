@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/todo_database
+    username: ${DB_USERNAME}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+rownskx:
+  app:
+    jwtSecret: ======================RownSkx=Spring===========================
+    jwtExpirationMs: 86400000
+  # security:
+  #   oauth2:
+  #     client:
+  #       registration:
+  #         google:
+  #           client-id: ${OAUTH2_CLIENT_ID}
+  #           client-secret: ${OAUTH2_CLIENT_SECRET}
+  #           redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+# logging:
+#     level:
+#         org:
+#             springframework:
+#                 security: TRACE
