@@ -1,0 +1,248 @@
+import lombok.Data;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "comment", schema = "public")
+@Data
+public class Comment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "content")
+    private String content;
+}
+
+@Entity
+@Table(name = "event", schema = "public")
+@Data
+public class Event {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "header", length = 100, nullable = false)
+    private String header;
+
+    @Column(name = "content")
+    private String content;
+
+    @Column(name = "date_time", nullable = false)
+    private java.sql.Timestamp dateTime;
+}
+
+@Entity
+@Table(name = "item", schema = "public")
+@Data
+public class Item {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "content")
+    private String content;
+
+    @Column(name = "finish_status")
+    private boolean finishStatus;
+
+    @ManyToOne
+    @JoinColumn(name = "task_id", nullable = false)
+    private Task task;
+}
+
+@Entity
+@Table(name = "list_event_id", schema = "public")
+@Data
+public class ListEventId {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "list_id", nullable = false)
+    private List list;
+
+    @ManyToOne
+    @JoinColumn(name = "event_id", nullable = false)
+    private Event event;
+}
+
+@Entity
+@Table(name = "list_task_id", schema = "public")
+@Data
+public class ListTaskId {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "list_id", nullable = false)
+    private List list;
+
+    @ManyToOne
+    @JoinColumn(name = "task_id", nullable = false)
+    private Task task;
+}
+
+@Entity
+@Table(name = "list", schema = "public")
+@Data
+public class List {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "header", length = 256, nullable = false)
+    private String header;
+}
+
+@Entity
+@Table(name = "owner_team_id", schema = "public")
+@Data
+public class OwnerTeamId {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "team_id", nullable = false)
+    private Team team;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private Users user;
+}
+
+@Entity
+@Table(name = "task_comment_id", schema = "public")
+@Data
+public class TaskCommentId {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "comment_id", nullable = false)
+    private Comment comment;
+
+    @ManyToOne
+    @JoinColumn(name = "task_id", nullable = false)
+    private Task task;
+}
+
+@Entity
+@Table(name = "task", schema = "public")
+@Data
+public class Task {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "header", length = 100, nullable = false)
+    private String header;
+
+    @Column(name = "content")
+    private String content;
+
+    @Column(name = "date_time", nullable = false)
+    private java.sql.Timestamp dateTime;
+
+    @Column(name = "reminder", nullable = false)
+    private boolean reminder;
+}
+
+@Entity
+@Table(name = "team_list_id", schema = "public")
+@Data
+public class TeamListId {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "list_id", nullable = false)
+    private List list;
+
+    @ManyToOne
+    @JoinColumn(name = "team_id", nullable = false)
+    private Team team;
+}
+
+@Entity
+@Table(name = "team_member", schema = "public")
+@Data
+public class TeamMember {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "rate_value", nullable = false)
+    private Integer rateValue;
+
+    @ManyToOne
+    @JoinColumn(name = "team_id", nullable = false)
+    private Team team;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private Users user;
+}
+
+@Entity
+@Table(name = "team", schema = "public")
+@Data
+public class Team {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "name", length = 30, nullable = false)
+    private String name;
+}
+
+@Entity
+@Table(name = "user_list_id", schema = "public")
+@Data
+public class UserListId {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "list_id", nullable = false)
+    private List list;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private Users user;
+}
+
+@Entity
+@Table(name = "users", schema = "public")
+@Data
+public class Users {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "login", unique = true, nullable = false)
+    private String login;
+
+    @Column(name = "name", length = 30, nullable = false)
+    private String name;
+}

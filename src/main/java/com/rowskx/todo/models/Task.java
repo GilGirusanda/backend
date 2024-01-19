@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.*;
 
 @Entity
 @Table
@@ -15,13 +16,14 @@ import java.time.LocalDateTime;
 public class Task {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "task_id_seq")
-    @SequenceGenerator(name = "task_id_seq", sequenceName = "task_id_seq", initialValue = 1, allocationSize = 1)
+    @Column(name = "id", updatable = false, columnDefinition = "BIGSERIAL")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 100)
     private String header;
 
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "date_time", nullable = false)
@@ -30,4 +32,7 @@ public class Task {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private Boolean reminder;
 
+    // @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval =
+    // true)
+    // private List<TaskComment> taskComments = new ArrayList<>();
 }

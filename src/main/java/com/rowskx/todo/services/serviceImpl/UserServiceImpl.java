@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userRepository.findById(id).ifPresent((e) -> {
             e.setLogin(newUser.getLogin());
             e.setName(newUser.getName());
-            e.setPassword(newUser.getPassword());
+            e.setPassword(passwordEncoder.encode(newUser.getPassword()));
             e.setRole(role);
             userRepository.save(e);
         });
@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
         u.setLogin(login);
         u.setName(newUser.getName());
-        u.setPassword(newUser.getPassword());
+        u.setPassword(passwordEncoder.encode(newUser.getPassword()));
         u.setRole(role);
         userRepository.save(u);
     }

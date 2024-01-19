@@ -6,25 +6,29 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "list_task")
+@Table(name = "list_task", uniqueConstraints = {
+        @UniqueConstraint(name = "listtask_task_id_unique", columnNames = "task_id")
+})
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class ListTask {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "list_task_id_seq")
-    @SequenceGenerator(name = "list_task_id_seq", sequenceName = "list_task_id_seq", initialValue = 1, allocationSize = 1)
+    @Column(name = "id", updatable = false, columnDefinition = "BIGSERIAL")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "list_id", nullable = false)
-//    @JoinColumn(name = "list_id", foreignKey = @ForeignKey(name = "fk_list_task_list"), nullable = false)
-    private List list;
+    @JoinColumn(name = "list_id", nullable = false, columnDefinition = "BIGINT")
+    // @JoinColumn(name = "list_id", foreignKey = @ForeignKey(name =
+    // "fk_list_task_list"), nullable = false)
+    private ListEntity list;
 
-    @OneToOne
-    @JoinColumn(name = "task_id", nullable = false, unique = true)
-//    @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_list_task_task"), nullable = false, unique = true)
+    @ManyToOne
+    @JoinColumn(name = "task_id", nullable = false, columnDefinition = "BIGINT")
+    // @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name =
+    // "fk_list_task_task"), nullable = false, unique = true)
     private Task task;
 
 }
