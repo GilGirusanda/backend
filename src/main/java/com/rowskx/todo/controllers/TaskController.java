@@ -1,9 +1,9 @@
 package com.rowskx.todo.controllers;
 
-import java.util.HashMap;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,125 +11,114 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import com.rowskx.todo.DTOs.List.ListAddRecord;
-import com.rowskx.todo.DTOs.List.ListDeleteRecord;
-import com.rowskx.todo.DTOs.List.ListEntityRecord;
-import com.rowskx.todo.DTOs.List.ListReadRecord;
-import com.rowskx.todo.DTOs.List.ListUpdateRecord;
-import com.rowskx.todo.models.ListEntity;
-import com.rowskx.todo.services.ListService;
-import com.rowskx.todo.services.serviceImpl.UserDetailsImpl;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import com.rowskx.todo.DTOs.Task.TaskAddRecord;
+import com.rowskx.todo.DTOs.Task.TaskFastDTO;
+import com.rowskx.todo.models.Task;
+import com.rowskx.todo.services.TaskService;
+import com.rowskx.todo.services.serviceImpl.UserDetailsImpl;
+
+import java.util.Objects;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
-@RequestMapping("/list")
+@RequestMapping("/task")
 @RequiredArgsConstructor
 @Slf4j
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
-public class ListController {
+public class TaskController {
 
     @Autowired
-    ListService listService;
+    TaskService taskService;
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> createList(@RequestBody ListAddRecord newList) {
+    public ResponseEntity<?> createList(@RequestBody TaskAddRecord newTask) {
         // Get the authentication object from the SecurityContext
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // Check if the authentication object is not null and the USER is authenticated
         if (authentication != null && authentication.isAuthenticated()) {
-            // Retrieve user details from the authentication object
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-            // Extract user information (such as username)
-            String userLogin = userDetails.getUsername();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+            LocalDateTime dateTimeParsed = LocalDateTime.parse(newTask.date_time(), formatter);
+            taskService.add(newTask.list_id(), new TaskFastDTO(null,
+                    newTask.header(),
+                    newTask.content(),
+                    dateTimeParsed,
+                    newTask.reminder()));
 
-            listService.add(newList.header(), userLogin);
-
-            return ResponseEntity.ok("New user list has been added");
+            return ResponseEntity.ok("New user task has been added");
         } else {
             // Handle the case when user is not authenticated
             return new ResponseEntity("User not authenticated", HttpStatus.FORBIDDEN);
         }
     }
 
-    @GetMapping("/read")
+    @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> readList(@RequestBody ListReadRecord newList) {
+    public ResponseEntity<?> findTaskById(@PathVariable Long id) {
         // Get the authentication object from the SecurityContext
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // Check if the authentication object is not null and the USER is authenticated
         if (authentication != null && authentication.isAuthenticated()) {
-
-            ListEntity list = listService.findById(newList.list_id());
-            ListEntityRecord listDTO = new ListEntityRecord(list.getId(), list.getHeader());
-
-            return new ResponseEntity<>(Map.of("list", listDTO), HttpStatus.OK);
-        } else {
-            // Handle the case when user is not authenticated
-            return new ResponseEntity<>("User not authenticated", HttpStatus.FORBIDDEN);
-        }
-    }
-
-    @GetMapping("/read-all")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> readAllList() {
-        // Get the authentication object from the SecurityContext
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // Check if the authentication object is not null and the USER is authenticated
-        if (authentication != null && authentication.isAuthenticated()) {
-
-            List<ListEntity> lists = listService.findAll();
-
-            List<ListEntityRecord> listsDTO = lists.stream()
-                    .map((l) -> new ListEntityRecord(l.getId(), l.getHeader()))
-                    .collect(Collectors.toList());
-
-            return new ResponseEntity<>(Map.of("lists", listsDTO), HttpStatus.OK);
-        } else {
-            // Handle the case when user is not authenticated
-            return new ResponseEntity<>("User not authenticated", HttpStatus.FORBIDDEN);
-        }
-    }
-
-    @PostMapping("/update")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> updateList(@RequestBody ListUpdateRecord newList) {
-        // Get the authentication object from the SecurityContext
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // Check if the authentication object is not null and the USER is authenticated
-        if (authentication != null && authentication.isAuthenticated()) {
-
-            listService.update(newList.list_id(), newList.header());
-
-            return ResponseEntity.ok("User list has been updated");
+            TaskFastDTO task = taskService.findById(id);
+            if (!java.util.Objects.isNull(task))
+                return ResponseEntity.ok(Map.of("task", task));
+            else
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
         } else {
             // Handle the case when user is not authenticated
             return new ResponseEntity("User not authenticated", HttpStatus.FORBIDDEN);
         }
     }
 
-    @PostMapping("/delete")
+    @GetMapping
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> deleteList(@RequestBody ListDeleteRecord listToDelete) {
+    public ResponseEntity<?> readAllTasksByListId(@RequestParam("list_id") Long listId) {
         // Get the authentication object from the SecurityContext
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // Check if the authentication object is not null and the USER is authenticated
         if (authentication != null && authentication.isAuthenticated()) {
+            List<TaskFastDTO> tasks = taskService.findAll(listId);
 
-            listService.delete(listToDelete.list_id());
+            return ResponseEntity.ok(Map.of("tasks", tasks));
+        } else {
+            // Handle the case when user is not authenticated
+            return new ResponseEntity("User not authenticated", HttpStatus.FORBIDDEN);
+        }
+    }
 
-            return ResponseEntity.ok("User list has been deleted");
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> deleteTaskById(@PathVariable Long id) {
+        // Get the authentication object from the SecurityContext
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Check if the authentication object is not null and the USER is authenticated
+        if (authentication != null && authentication.isAuthenticated()) {
+            taskService.delete(id);
+            return ResponseEntity.ok(Map.of("msg", "Task has been deleted successfully"));
+        } else {
+            // Handle the case when user is not authenticated
+            return new ResponseEntity("User not authenticated", HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @PutMapping
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> updateTask(@RequestBody TaskFastDTO task) {
+        // Get the authentication object from the SecurityContext
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Check if the authentication object is not null and the USER is authenticated
+        if (authentication != null && authentication.isAuthenticated()) {
+            taskService.update(task);
+            return ResponseEntity.ok(Map.of("msg", "Task has been updated successfully"));
         } else {
             // Handle the case when user is not authenticated
             return new ResponseEntity("User not authenticated", HttpStatus.FORBIDDEN);

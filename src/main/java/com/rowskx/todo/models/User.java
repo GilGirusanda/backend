@@ -38,6 +38,10 @@ public class User {
     @JoinTable(name = "user_list", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "list_id", unique = true))
     private List<ListEntity> lists = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(name = "owner_team", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "team_id", unique = true))
+    private List<Team> teams = new ArrayList<>();
+
     public User(Long id, String login, String name, String password, Role role) {
         this.id = id;
         this.login = login;

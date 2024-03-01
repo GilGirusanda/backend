@@ -1,4 +1,4 @@
-package com.rowskx.todo.DTOs;
+package com.rowskx.todo.DTOs.User;
 
 import com.rowskx.todo.models.Role;
 

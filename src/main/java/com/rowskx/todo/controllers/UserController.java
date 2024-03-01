@@ -1,9 +1,9 @@
 package com.rowskx.todo.controllers;
 
 import com.rowskx.todo.DTOs.JwtResponse;
-import com.rowskx.todo.DTOs.UserLoginRecord;
-import com.rowskx.todo.DTOs.UserRecord;
-import com.rowskx.todo.DTOs.UserRetrieveRecord;
+import com.rowskx.todo.DTOs.User.UserLoginRecord;
+import com.rowskx.todo.DTOs.User.UserRecord;
+import com.rowskx.todo.DTOs.User.UserRetrieveRecord;
 import com.rowskx.todo.jwt.JwtUtils;
 import com.rowskx.todo.models.User;
 import com.rowskx.todo.services.UserService;

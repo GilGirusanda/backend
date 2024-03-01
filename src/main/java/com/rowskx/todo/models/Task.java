@@ -30,7 +30,11 @@ public class Task {
     private LocalDateTime dateTime;
 
     @Column(nullable = false, columnDefinition = "boolean default false")
-    private Boolean reminder;
+    private Boolean reminder = false;
+
+    @ManyToMany /* (fetch = FetchType.EAGER) */
+    @JoinTable(name = "task_comment", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "comment_id", unique = true))
+    private List<Comment> comments = new ArrayList<>();
 
     // @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval =
     // true)

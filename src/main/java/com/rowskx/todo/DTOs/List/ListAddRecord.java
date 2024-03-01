@@ -1,4 +1,4 @@
-package com.rowskx.todo.DTOs;
+package com.rowskx.todo.DTOs.List;
 
 public record ListAddRecord(String header) {
 

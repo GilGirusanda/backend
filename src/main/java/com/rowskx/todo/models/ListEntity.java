@@ -26,6 +26,10 @@ public class ListEntity {
     @JoinTable(name = "list_task", joinColumns = @JoinColumn(name = "list_id"), inverseJoinColumns = @JoinColumn(name = "task_id", unique = true))
     private List<Task> tasks = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(name = "list_event", joinColumns = @JoinColumn(name = "list_id"), inverseJoinColumns = @JoinColumn(name = "event_id", unique = true))
+    private List<Event> events = new ArrayList<>();
+
     public ListEntity(String header) {
         this.header = header;
     }

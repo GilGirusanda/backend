@@ -4,6 +4,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### VSCODE DB EXTENSION ###
+todo_db_conn.session.sql
+
 ### STS ###
 .apt_generated
 .classpath
