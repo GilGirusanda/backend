@@ -28,4 +28,8 @@ public class Event {
 
     @Column(name = "date_time", nullable = false)
     private LocalDateTime dateTime;
+
+    @ManyToOne
+    @JoinColumn(name="list_id", nullable = false, columnDefinition = "BIGINT")
+    private ListEntity list;
 }

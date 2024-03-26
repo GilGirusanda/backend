@@ -2,11 +2,11 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     password: ${DB_PASSWORD}
-    url: jdbc:postgresql://${PGSQL_HOST:localhost}:5432/todo_database2
+    url: jdbc:postgresql://${PGSQL_HOST:localhost}:5432/todo_database3
     username: ${DB_USERNAME}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate # update
     open-in-view: false
     show-sql: true
     properties:

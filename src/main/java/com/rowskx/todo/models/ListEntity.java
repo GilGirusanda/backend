@@ -3,15 +3,14 @@ package com.rowskx.todo.models;
 import java.util.*;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "lists")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class ListEntity {
 
     @Id
@@ -22,13 +21,11 @@ public class ListEntity {
     @Column(nullable = false, length = 255)
     private String header;
 
-    @ManyToMany
-    @JoinTable(name = "list_task", joinColumns = @JoinColumn(name = "list_id"), inverseJoinColumns = @JoinColumn(name = "task_id", unique = true))
-    private List<Task> tasks = new ArrayList<>();
+    @OneToMany(mappedBy = "list", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Task> tasks = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(name = "list_event", joinColumns = @JoinColumn(name = "list_id"), inverseJoinColumns = @JoinColumn(name = "event_id", unique = true))
-    private List<Event> events = new ArrayList<>();
+    @OneToMany(mappedBy = "list", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Event> events = new HashSet<>();
 
     public ListEntity(String header) {
         this.header = header;

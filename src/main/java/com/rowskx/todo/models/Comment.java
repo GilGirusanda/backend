@@ -3,15 +3,14 @@ package com.rowskx.todo.models;
 import java.util.*;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "comments")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class Comment {
 
     @Id
@@ -22,6 +21,7 @@ public class Comment {
     @Column(name = "content")
     private String content;
 
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TaskComment> taskComments = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name="task_id", nullable = false, columnDefinition = "BIGINT")
+    private Task task;
 }

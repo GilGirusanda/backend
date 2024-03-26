@@ -1,9 +1,7 @@
 package com.rowskx.todo.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -12,7 +10,8 @@ import java.util.*;
 @Table
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class Task {
 
     @Id
@@ -32,9 +31,19 @@ public class Task {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private Boolean reminder = false;
 
-    @ManyToMany /* (fetch = FetchType.EAGER) */
-    @JoinTable(name = "task_comment", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "comment_id", unique = true))
-    private List<Comment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Comment> comments = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "list_id", nullable = false, columnDefinition = "BIGINT")
+    private ListEntity list;
+
+//    @OneToMany /* (fetch = FetchType.EAGER) */
+//    @JoinTable(
+//            name = "task_comment",
+//            joinColumns = @JoinColumn(name = "task_id", nullable = false, columnDefinition = "BIGINT"),
+//            inverseJoinColumns = @JoinColumn(name = "comment_id", unique = true, nullable = false, columnDefinition = "BIGINT"))
+//    private List<Comment> comments = new ArrayList<>();
 
     // @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval =
     // true)

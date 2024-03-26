@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,16 +21,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
+@AllArgsConstructor
 @Transactional
 @Slf4j
 public class ItemServiceImpl implements ItemService {
 
-    @Autowired
-    ItemRepository itemRepository;
+//    @Autowired
+    private ItemRepository itemRepository;
 
-    @Autowired
-    TaskService taskService;
+//    @Autowired
+    private TaskService taskService;
 
     @Override
     public Boolean add(Long taskId, ItemDTO newItem) {

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,12 +75,17 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskFastDTO> findAll(Long listId) {
-        Optional<List<TaskFastDTO>> tasksOptional = Optional.ofNullable(taskRepository.findAllByListId(listId));
-
-        if (tasksOptional.isPresent())
-            return tasksOptional.get();
-        else
-            return new ArrayList<TaskFastDTO>();
+        return taskRepository.findAll().stream()
+                .filter(t->!t.getId().equals(listId))
+                .map(t->{
+            return new TaskFastDTO(t.getId(), t.getHeader(), t.getContent(), t.getDateTime(), t.getReminder());
+        }).collect(Collectors.toList());
+//        Optional<List<TaskFastDTO>> tasksOptional = Optional.ofNullable(taskRepository.findAllByListId(listId));
+//
+//        if (tasksOptional.isPresent())
+//            return tasksOptional.get();
+//        else
+//            return new ArrayList<TaskFastDTO>();
     }
 
     @Override

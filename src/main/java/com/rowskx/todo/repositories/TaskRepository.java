@@ -19,8 +19,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                         @Param("content") String content,
                         @Param("dateTime") LocalDateTime dateTime, @Param("reminder") Boolean reminder);
 
-        @Query(value = "SELECT new com.rowskx.todo.DTOs.Task.TaskFastDTO(t.id, t.header, t.content, t.dateTime, t.reminder)  FROM Task t INNER JOIN ListTask lt ON t.id = lt.task.id WHERE lt.list.id = :listId")
-        List<TaskFastDTO> findAllByListId(@Param("listId") Long listId);
+//        @Query(value = "SELECT new com.rowskx.todo.DTOs.Task.TaskFastDTO(t.id, t.header, t.content, t.dateTime, t.reminder)  FROM Task t INNER JOIN ListEntity le ON t.id = le.tasks.id WHERE le.id = :listId")
+//        List<TaskFastDTO> findAllByListId(@Param("listId") Long listId);
 
         @Query(value = "SELECT * FROM delete_user_task(CAST(:taskId AS BIGINT));", nativeQuery = true)
         void delete(@Param("taskId") Long taskId);

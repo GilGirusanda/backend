@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,23 +37,24 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/item")
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
+@AllArgsConstructor
 @Slf4j
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 public class ItemController {
 
-    @Autowired
-    ItemService itemService;
+    private ItemService itemService;
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createList(@RequestBody ItemAddRecord newItem) {
         // Get the authentication object from the SecurityContext
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // Check if the authentication object is not null and the USER is authenticated
         if (authentication != null && authentication.isAuthenticated()) {
-            Boolean res = itemService.add(newItem.task_id(), new ItemDTO(null,
+            Boolean res = itemService.add(newItem.task_id(), new ItemDTO(
+                    null,
                     newItem.content(),
                     newItem.finish_status()));
             if (res)
@@ -66,7 +68,7 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> findItemById(@PathVariable Long id) {
         // Get the authentication object from the SecurityContext
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -85,7 +87,7 @@ public class ItemController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> readAllItemsByTaskId(@RequestParam("task_id") Long taskId) {
         // Get the authentication object from the SecurityContext
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -102,7 +104,7 @@ public class ItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> deleteItemByIdAndTaskId(@PathVariable Long itemId, @RequestParam Long taskId) {
         // Get the authentication object from the SecurityContext
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -118,7 +120,7 @@ public class ItemController {
     }
 
     @PutMapping
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> updateItem(@RequestBody ItemDTO item) {
         // Get the authentication object from the SecurityContext
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
