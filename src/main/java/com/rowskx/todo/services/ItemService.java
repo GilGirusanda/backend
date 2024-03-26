@@ -7,11 +7,11 @@ import com.rowskx.todo.models.Item;
 
 public interface ItemService {
 
-    void add(Long taskId, ItemDTO newItem);
+    Boolean add(Long taskId, ItemDTO newItem);
 
     void update(ItemDTO newItem);
 
-    void delete(Long itemId);
+    void delete(Long itemId, Long taskId);
 
     Item findById(Long itemId);
 

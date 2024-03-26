@@ -32,24 +32,31 @@ public class ItemServiceImpl implements ItemService {
     TaskService taskService;
 
     @Override
-    public void add(Long taskId, ItemDTO newItem) {
+    public Boolean add(Long taskId, ItemDTO newItem) {
         Optional<Task> existingTask = Optional.ofNullable(taskService.findByIdTask(taskId));
-        if (existingTask.isPresent())
+        if (existingTask.isPresent()) {
             itemRepository.save(
                     new Item(newItem.getId(), newItem.getContent(), newItem.getFinish_status(),
                             existingTask.get()));
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public void update(ItemDTO newItem) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        if (Objects.isNull(newItem.getId())) {
+            log.info("Can't update the task: taskId is null");
+            return;
+        }
+
+        itemRepository.update(newItem.getId(), newItem.getContent(), newItem.getFinish_status());
     }
 
     @Override
-    public void delete(Long itemId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+    public void delete(Long itemId, Long taskId) {
+        itemRepository.deleteItem(itemId, taskId);
     }
 
     @Override
@@ -69,7 +76,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDTO> findAllByTaskId(Long taskId) {
-        return itemRepository.findByTaskId(taskId);
+        return itemRepository.findDtoByTaskId(taskId);
     }
 
 }
